@@ -1,5 +1,4 @@
-﻿using API.DAL;
-using API.Entity;
+﻿using API.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,16 +8,17 @@ namespace API.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IRepository _repository;
 
-        public CategoryController(AppDbContext context)
+        public CategoryController(IRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(int page = 1, int take = 3)
         {
-            var categories = await _context.Categories.ToListAsync();
+            var categories = await _repository.GetAll().ToListAsync();
+            //var categories = await _context.Categories.Skip((page - 1) * take).ToListAsync();
             // return Ok(categories);
             return StatusCode(StatusCodes.Status200OK, categories);
         }
@@ -28,7 +28,7 @@ namespace API.Controllers
         {
             if (id < 1) return BadRequest();
 
-            Category category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
+            Category category = await _repository.GetByIdAsync(id);
 
             if (category == null) return NotFound();
 
@@ -36,10 +36,10 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Category category)
+        public async Task<IActionResult> Create([FromForm] CreateCategoryDTO category)
         {
-            await _context.Categories.AddAsync(category);
-            await _context.SaveChangesAsync();
+            await _repository.AddAsync(new Category { Name = category.Name });
+            await _repository.SaveChangesAsync();
 
             // return Created();
             return StatusCode(StatusCodes.Status201Created);
@@ -50,12 +50,12 @@ namespace API.Controllers
         {
             if (id < 1) return BadRequest();
 
-            Category category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
+            Category category = await _repository.GetByIdAsync(id);
 
             if (category == null) return NotFound();
 
-            _context.Categories.Remove(category);
-            await _context.SaveChangesAsync();
+            _repository.Delete(category);
+            await _repository.SaveChangesAsync();
 
             return NoContent();
         }
@@ -65,12 +65,12 @@ namespace API.Controllers
         {
             if (id < 1) return BadRequest();
 
-            Category category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
+            Category category = await _repository.GetByIdAsync(id);
 
             if (category == null) return NotFound();
 
             category.Name = name;
-            await _context.SaveChangesAsync();
+            await _repository.SaveChangesAsync();
 
             return NoContent();
         }

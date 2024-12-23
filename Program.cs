@@ -1,5 +1,5 @@
-
-using API.DAL;
+using API.Repositories.Implementations;
+using API.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace API
@@ -17,6 +17,7 @@ namespace API
             {
                 opt.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
             });
+            builder.Services.AddScoped<IRepository, Repository>();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
