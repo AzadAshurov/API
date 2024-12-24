@@ -15,7 +15,7 @@ namespace API
 
             builder.Services.AddDbContext<AppDbContext>(opt =>
             {
-                opt.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
+                opt.UseSqlServer(builder.Configuration.GetConnectionString("Univer"));
             });
             builder.Services.AddScoped<IRepository, Repository>();
             builder.Services.AddEndpointsApiExplorer();
