@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using API.Repositories.Implementations;
 using API.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -15,9 +16,11 @@ namespace API
 
             builder.Services.AddDbContext<AppDbContext>(opt =>
             {
-                opt.UseSqlServer(builder.Configuration.GetConnectionString("Univer"));
+                opt.UseSqlServer(builder.Configuration.GetConnectionString("Home"));
             });
-            builder.Services.AddScoped<IRepository, Repository>();
+            builder.Services.AddControllers().AddJsonOptions(x =>
+    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+            builder.Services.AddScoped<IRepository<Category>, Repository<Category>>();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
