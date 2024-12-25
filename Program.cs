@@ -1,7 +1,11 @@
+
+
+using System.Text.Json.Serialization;
 using API.Repositories.Implementations;
 using API.Repositories.Interfaces;
+using API.Services.Implementations;
+using API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
 
 namespace API
 {
@@ -21,6 +25,9 @@ namespace API
             builder.Services.AddControllers().AddJsonOptions(x =>
     x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
             builder.Services.AddScoped<IRepository<Category>, Repository<Category>>();
+            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+            builder.Services.AddScoped<IRepository<Product>, Repository<Product>>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
