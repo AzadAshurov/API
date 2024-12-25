@@ -9,6 +9,7 @@ namespace API.Repositories.Implementations
 
         public Repository(AppDbContext context)
         {
+            Console.Beep();
             _context = context;
         }
 
