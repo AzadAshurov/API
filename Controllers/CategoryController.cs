@@ -8,9 +8,9 @@ namespace API.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        private readonly IRepository _repository;
+        private readonly IRepository<Category> _repository;
 
-        public CategoryController(IRepository repository)
+        public CategoryController(IRepository<Category> repository)
         {
             _repository = repository;
         }
