@@ -1,7 +1,7 @@
-using System.Text.Json.Serialization;
 using API.Repositories.Implementations;
 using API.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 namespace API
 {

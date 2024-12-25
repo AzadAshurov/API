@@ -4,7 +4,7 @@ namespace API.Repositories.Interfaces
 {
     public interface IRepository<T> where T : BaseEntity, new()
     {
-        IQueryable<T> GetAll(
+        public IQueryable<T> GetAll(
         Expression<Func<T, bool>>? expression = null,
         Expression<Func<T, object>>? orderExpression = null,
         int skip = 0,

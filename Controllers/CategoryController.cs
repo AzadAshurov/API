@@ -1,6 +1,6 @@
 ﻿using API.Repositories.Interfaces;
+using API.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
@@ -9,18 +9,17 @@ namespace API.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly IRepository<Category> _repository;
+        private readonly ICategoryService _categoryService;
 
-        public CategoryController(IRepository<Category> repository)
+        public CategoryController(IRepository<Category> repository, ICategoryService categoryService)
         {
             _repository = repository;
+            _categoryService = categoryService;
         }
         [HttpGet]
         public async Task<IActionResult> Get(int page = 1, int take = 3)
         {
-            var categories = await _repository.GetAll().ToListAsync();
-            //var categories = await _context.Categories.Skip((page - 1) * take).ToListAsync();
-            // return Ok(categories);
-            return StatusCode(StatusCodes.Status200OK, categories);
+            return StatusCode(StatusCodes.Status200OK, await _categoryService.GetAllAsync(page, take));
         }
 
         [HttpGet("{id}")]
