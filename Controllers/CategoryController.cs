@@ -27,11 +27,11 @@ namespace API.Controllers
         {
             if (id < 1) return BadRequest();
 
-            Category category = await _repository.GetByIdAsync(id);
+            var categoryDTO = await _categoryService.GetByIdAsync(id);
 
-            if (category == null) return NotFound();
+            if (categoryDTO == null) return NotFound();
 
-            return StatusCode(StatusCodes.Status200OK, category);
+            return StatusCode(StatusCodes.Status200OK, categoryDTO);
         }
 
         [HttpPost]

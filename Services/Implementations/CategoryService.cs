@@ -1,4 +1,4 @@
-﻿
+﻿using API.DTOs.Product;
 using API.Repositories.Interfaces;
 using API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -28,6 +28,28 @@ namespace API.Services.Implementations
             return categories;
 
         }
+
+        public async Task<GetCategoryDetailDTO> GetByIdAsync(int id)
+        {
+            Category category = await _categoryRepository.GetByIdAsync(id, nameof(Category.Products));
+
+            if (category == null) return null;
+
+            GetCategoryDetailDTO categoryDTO = new()
+            {
+                Id = category.Id,
+                Name = category.Name,
+                ProductsDTOs = category.Products?.Select(p => new GetProductDTO
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Price = p.Price
+                }).ToList() ?? new List<GetProductDTO>()
+            };
+
+            return categoryDTO;
+        }
+
 
     }
 }

@@ -1,6 +1,6 @@
-﻿using API.Repositories.Interfaces;
+﻿using System.Linq.Expressions;
+using API.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace API.Repositories.Implementations
 {
@@ -41,12 +41,7 @@ namespace API.Repositories.Implementations
                 query = query.Where(expression);
 
             if (includes != null)
-            {
-                for (int i = 0; i < includes.Length; i++)
-                {
-                    query = query.Include(includes[i]);
-                }
-            }
+                query = _getIncludes(query, includes);
 
             query = orderExpression != null ? (query = isDescending ? query.OrderByDescending(orderExpression) : query.OrderBy(orderExpression)) : query;
             query = query.Skip(skip);
@@ -54,8 +49,11 @@ namespace API.Repositories.Implementations
             return isTracking ? query : query.AsNoTracking();
         }
 
-        public async Task<T> GetByIdAsync(int id)
+        public async Task<T> GetByIdAsync(int id, params string[] includes)
         {
+            IQueryable<T> query = _table;
+            if (includes != null)
+                query = _getIncludes(query, includes);
             return await _table.FirstOrDefaultAsync(x => x.Id == id);
         }
 
@@ -68,6 +66,13 @@ namespace API.Repositories.Implementations
         {
             _table.Update(entity);
         }
-
+        private IQueryable<T> _getIncludes(IQueryable<T> query, params string[] includes)
+        {
+            for (int i = 0; i < includes.Length; i++)
+            {
+                query = query.Include(includes[i]);
+            }
+            return query;
+        }
     }
 }
