@@ -49,7 +49,45 @@ namespace API.Services.Implementations
 
             return categoryDTO;
         }
+        public async Task<bool> CreateCategoryAsync(CreateCategoryDTO categoryDTO)
+        {
+            if (await _categoryRepository.AnyAsync(c => c.Name == categoryDTO.Name))
+                return false;
 
+            await _categoryRepository.AddAsync(new Category
+            {
+                Name = categoryDTO.Name
+            });
+
+            await _categoryRepository.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task UpdateCategoryAsync(int id, UpdateCategoryDTO categoryDTO)
+        {
+            Category category = await _categoryRepository.GetByIdAsync(id);
+            if (category == null)
+                throw new Exception("Not found");
+
+            if (await _categoryRepository.AnyAsync(c => c.Name == categoryDTO.Name && c.Id == id))
+                throw new Exception("Exists");
+
+            category.Name = categoryDTO.Name;
+            _categoryRepository.Update(category);
+            await _categoryRepository.SaveChangesAsync();
+        }
+
+        public async Task DeleteCategoryAsync(int id)
+        {
+            Category category = await _categoryRepository.GetByIdAsync(id);
+
+            if (category == null)
+                throw new Exception("Not found");
+
+            _categoryRepository.Delete(category);
+            await _categoryRepository.SaveChangesAsync();
+        }
 
     }
 }

@@ -61,7 +61,6 @@ namespace API.Repositories.Implementations
         {
             return await _context.SaveChangesAsync();
         }
-
         public void Update(T entity)
         {
             _table.Update(entity);
@@ -74,5 +73,10 @@ namespace API.Repositories.Implementations
             }
             return query;
         }
+        public Task<bool> AnyAsync(Expression<Func<T, bool>> anyExpression)
+        {
+            return _table.AnyAsync(anyExpression);
+        }
+
     }
 }
